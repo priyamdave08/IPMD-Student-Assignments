@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#09090d"><title>EchoSphere — Video to music</title>
+<link rel="stylesheet" href="web/base.css"><link rel="stylesheet" href="web/video.css">
+</head>
+<body>
+<canvas id="sphereCanvas" aria-hidden="true"></canvas>
+<div class="app" id="stageRoot">
+  <header class="masthead">
+    <a class="brand" href="#main" aria-label="EchoSphere home"><span class="brand-mark" aria-hidden="true"></span>echo<span>sphere</span><span class="brand-period">.</span></a>
+    <div class="header-actions"><span id="connection" class="connection">Connecting…</span><button class="motion-button" id="calmToggle" aria-pressed="false"><span id="motionLabel">Motion on</span></button></div>
+  </header>
+  <main id="main" class="experience">
+    <figure class="sphere-stage" id="sphereAnchor" aria-label="Living sphere reflecting the soundtrack mood">
+      <button class="sphere-touch" id="sphereTouch" aria-label="Release light from the sphere"><span class="sr-only">Send a ripple</span></button>
+      <figcaption><h1 id="moodTitle">Warm<span>.</span></h1><span id="soundMeta">A soundtrack for your sphere</span></figcaption>
+    </figure>
+    <section class="compose" aria-label="Create a video soundtrack">
+      <div class="reference-row">
+        <button id="referenceButton" class="reference-button"><span class="upload-icon" aria-hidden="true">↑</span><span class="reference-copy"><span id="refStatus">Add a video</span><small>MP4 · 10–60 seconds · up to 100 MB</small></span><span class="reference-plus" aria-hidden="true">+</span></button>
+        <input type="file" id="fileInput" accept="video/mp4,.mp4" hidden>
+      </div>
+      <section id="focusPanel" class="work-panel" hidden aria-labelledby="focusTitle">
+        <div class="panel-heading"><div><span class="eyebrow">01 / FOCUS</span><h2 id="focusTitle">Inside the sphere.</h2></div><span id="videoDuration" class="subtle"></span></div>
+        <p class="helper">Draw an ellipse around the sphere’s interior. Scrub forward and save another focus point when it moves or grows.</p>
+        <div class="focus-stage"><video id="sourceVideo" muted playsinline preload="metadata"></video><canvas id="focusCanvas" aria-label="Drag to select the sphere interior"></canvas></div>
+        <div class="scrub-row"><input id="focusTime" type="range" min="0" max="10" step="0.05" value="0" aria-label="Focus frame time"><output id="focusClock">0:00</output></div>
+        <div class="focus-numbers" aria-label="Adjust focus ellipse with the keyboard">
+          <label>Center X <input id="focusCx" type="number" min="2.5" max="97.5" step="0.5" value="50">%</label>
+          <label>Center Y <input id="focusCy" type="number" min="2.5" max="97.5" step="0.5" value="60">%</label>
+          <label>Width <input id="focusWidth" type="number" min="5" max="100" step="0.5" value="25">%</label>
+          <label>Height <input id="focusHeight" type="number" min="5" max="100" step="0.5" value="35">%</label>
+        </div>
+        <div class="focus-actions"><button id="saveFocus" class="secondary-button">Save focus here</button><span id="focusHint" class="subtle">Save the first focus at 0:00.</span></div>
+        <div id="focusPoints" class="focus-points" aria-label="Saved focus points"></div>
+        <div class="analysis-action"><button id="analyzeButton" class="primary-button" disabled>Read the sphere</button><span class="subtle">Only the selected interior is analyzed.</span></div>
+      </section>
+      <section id="reviewPanel" class="work-panel" hidden aria-labelledby="reviewTitle">
+        <span class="eyebrow">02 / FEELING</span><h2 id="reviewTitle">Give the scene its sound.</h2>
+        <p id="interpretation"></p><p id="analysisMethod" class="helper"></p>
+        <label class="auto-choice"><input id="autoMood" type="checkbox" checked> Use the suggested feeling</label>
+        <div class="mood-grid" role="group" aria-label="Soundtrack feeling">
+          <button class="mood-btn active" data-mood="warm" style="--mood:#FFD166" aria-pressed="true">✺ <span>Warm</span></button>
+          <button class="mood-btn" data-mood="calm" style="--mood:#A78AEA" aria-pressed="false">≈ <span>Calm</span></button>
+          <button class="mood-btn" data-mood="anger" style="--mood:#EF6370" aria-pressed="false">ϟ <span>Anger</span></button>
+          <button class="mood-btn" data-mood="sad" style="--mood:#75A6D9" aria-pressed="false">☾ <span>Sad</span></button>
+        </div>
+        <div id="evidence" class="evidence" aria-label="Sphere frames used for analysis"></div>
+        <button id="generateButton" class="primary-button">Create soundtrack</button>
+      </section>
+      <p id="status" class="status video-status" role="status" aria-live="polite">Add a video to begin.</p>
+      <button id="cancelButton" class="secondary-button" hidden>Cancel current job</button>
+      <section id="resultPanel" class="work-panel" hidden aria-labelledby="resultTitle">
+        <span class="eyebrow">03 / WATCH &amp; LISTEN</span><h2 id="resultTitle">Your scene, with music.</h2>
+        <video id="resultVideo" controls playsinline preload="metadata"></video>
+        <div class="result-actions"><button id="variationButton" class="secondary-button">New variation</button><a id="audioDownload" class="secondary-button" download>Download WAV</a><a id="videoDownload" class="secondary-button" download>Download MP4</a></div>
+        <p id="resultMeta" class="helper"></p>
+        <label class="subtle">Saved variations <select id="variations" aria-label="Saved variations"></select></label>
+      </section>
+      <details class="settings"><summary>Generation settings &amp; saved videos</summary>
+        <label>Read the sphere with <select id="analyzer"><option value="measurements">Color &amp; motion measurements</option><option value="qwen">Qwen vision (requires local model)</option></select></label>
+        <label>Make the music with <select id="engine"><option value="library">Music library (recorded tracks)</option><option value="composer">EchoSphere instrument composer</option><option value="ace">ACE-Step (requires local model)</option></select></label>
+        <p class="helper">The music library picks a recorded, licensed track for the mood and fits it to the video; its credit is shown with the result. The composer is the sample-based engine with a video arrangement. AI-model quality still needs testing on your computer. An unavailable model produces an error; it never silently switches engines.</p>
+        <label>Saved videos <select id="savedVideos"><option value="">Choose a video…</option></select></label>
+        <button id="deleteVideo" class="secondary-button" disabled>Delete video &amp; its results</button>
+        <a id="metadataDownload" hidden>Download generation details</a>
+      </details>
+    </section>
+  </main>
+  <footer class="footer"><span>EchoSphere Music · local preview</span><button id="creditsButton">Credits &amp; about</button></footer>
+</div>
+<dialog id="creditsDialog" aria-labelledby="creditsTitle"><div class="dialog-head"><h2 id="creditsTitle">Made of sound.</h2><button id="closeCredits" class="icon-button" aria-label="Close credits">×</button></div>
+<p>Recorded tracks come from the music library: Kevin MacLeod (incompetech.com), licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Each result shows its track\u2019s credit and the full list is in music-library/CREDITS.md. Tracks are shortened and faded to fit the video.</p>
+<p>Visual analysis uses only your selected sphere interior. The source video’s audio is excluded. Generated music is processed by the selected local engine.</p>
+<h3>Instrument recordings</h3><p><a href="https://github.com/nbrosowsky/tonejs-instruments">tonejs-instruments — Nathaniel Brosowsky</a>, <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Piano and violin: VSCO 2 Community Edition, Versilian Studios. Cello: flcellogrl, Freesound. Electric guitar: Karoryfer. Recordings are sequenced, pitch shifted, enveloped and mixed.</p>
+<p>The original standalone music playground remains in index.html. Local setup and API instructions are in the repository’s docs folder.</p></dialog>
+<script src="web/video.js"></script><script src="web/sphere.js"></script>
+</body></html>

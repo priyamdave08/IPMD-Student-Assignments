@@ -1,0 +1,16 @@
+.git
+.venv
+data
+music-library
+test-results
+tests
+docs
+scripts
+__pycache__
+*.pyc
+.pytest_cache
+.env
+*.mp4
+*.wav
+*.mov
+.dockerignore

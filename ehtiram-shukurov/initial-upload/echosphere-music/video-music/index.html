@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#09090d">
+<meta name="description" content="Add a video of the EchoSphere robot. The page finds the sphere, reads its mood from its light, and plays a song that fits. Everything happens in your browser.">
+<title>EchoSphere — Music for your video</title>
+<link rel="stylesheet" href="../web/base.css"><link rel="stylesheet" href="../web/video.css"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="sphereCanvas" aria-hidden="true"></canvas>
+<div class="app" id="stageRoot">
+  <header class="masthead">
+    <a class="brand" href="./" aria-label="EchoSphere home"><span class="brand-mark" aria-hidden="true"></span>echo<span>sphere</span><span class="brand-period">.</span></a>
+    <div class="header-actions"><span id="library" class="connection">Loading songs…</span><button class="motion-button" id="calmToggle" aria-pressed="false"><span id="motionLabel">Motion on</span></button></div>
+  </header>
+  <main class="experience">
+    <figure class="sphere-stage" id="sphereAnchor" aria-label="Living sphere in the colour of the chosen feeling">
+      <button class="sphere-touch" id="sphereTouch" aria-label="Release light from the sphere"><span class="sr-only">Send a ripple</span></button>
+      <figcaption><h1 id="moodTitle">Your video<span>.</span></h1><span id="soundMeta">Add a video to hear its song</span></figcaption>
+    </figure>
+
+    <section class="compose" aria-label="Choose music for a video">
+      <div class="reference-row" id="dropRow">
+        <button id="addButton" class="reference-button dropzone"><span class="upload-icon" aria-hidden="true">↑</span><span class="reference-copy"><span id="addLabel">Add a video</span><small>Drop it here or choose it. It stays on your device: nothing is uploaded.</small></span></button>
+        <input type="file" id="fileInput" accept="video/*,.mp4,.mov,.m4v,.webm" hidden>
+      </div>
+      <p id="status" class="status video-status" role="status" aria-live="polite">Add a video of the robot — its light becomes the music.</p>
+      <div id="progress" class="progress" hidden><span id="progressBar"></span></div>
+      <ol class="steps-preview" aria-label="How it works">
+        <li><span class="eyebrow">01</span><span>Add a video of the robot</span></li>
+        <li><span class="eyebrow">02</span><span>The sphere is found and its light is read</span></li>
+        <li><span class="eyebrow">03</span><span>A matching song plays along with it</span></li>
+      </ol>
+
+      <div class="results" id="results">
+      <section id="videoPanel" class="work-panel" hidden aria-labelledby="videoTitle">
+        <div class="panel-heading"><span class="eyebrow">01 / THE SPHERE</span><label class="toggle"><input id="showOverlay" type="checkbox" checked> Show what was read</label></div>
+        <h2 id="videoTitle">Your video.</h2>
+        <div class="video-stage"><video id="video" muted playsinline preload="auto"></video><canvas id="overlay" aria-hidden="true"></canvas></div>
+        <p id="detectionNote" class="helper"></p>
+        <div class="action-row">
+          <button id="drawButton" class="secondary-button">Mark the sphere myself</button>
+          <button id="wholeButton" class="secondary-button" hidden>The whole picture is the sphere</button>
+          <button id="autoButton" class="secondary-button" hidden>Find it automatically</button>
+          <button id="changeButton" class="secondary-button">Use another video</button>
+        </div>
+        <p id="drawHint" class="helper" hidden>Drag from the middle of the sphere out to its edge.</p>
+      </section>
+
+      <section id="feelingPanel" class="work-panel" hidden aria-labelledby="feelingTitle">
+        <span class="eyebrow">02 / FEELING</span><h2 id="feelingTitle">What the sphere feels like.</h2>
+        <p id="interpretation"></p>
+        <div class="timeline-wrap" id="timelineWrap" hidden>
+          <span class="eyebrow">The light over time</span>
+          <div class="timeline" id="timeline" role="group" aria-label="Mood over time. Activate a segment to jump the video there."></div>
+          <p class="helper timeline-note">What was read in each part of the video — click a segment to jump there. Striped segments are mixed light the rule would not decide on.</p>
+        </div>
+        <div class="mood-grid" role="group" aria-label="Feeling">
+          <button class="mood-btn" data-mood="warm" style="--mood:#FFD166" aria-pressed="false"><span class="mood-symbol" aria-hidden="true">✺</span><span>Warm</span></button>
+          <button class="mood-btn" data-mood="calm" style="--mood:#A78AEA" aria-pressed="false"><span class="mood-symbol" aria-hidden="true">≈</span><span>Calm</span></button>
+          <button class="mood-btn" data-mood="anger" style="--mood:#EF6370" aria-pressed="false"><span class="mood-symbol" aria-hidden="true">ϟ</span><span>Dynamic</span></button>
+          <button class="mood-btn" data-mood="sad" style="--mood:#75A6D9" aria-pressed="false"><span class="mood-symbol" aria-hidden="true">☾</span><span>Sad</span></button>
+        </div>
+        <details class="settings"><summary>How this was read</summary><div id="details"></div></details>
+      </section>
+
+      <section id="songPanel" class="work-panel" hidden aria-labelledby="songTitle">
+        <span class="eyebrow">03 / THE SONG</span><h2 id="songTitle">—</h2>
+        <p id="songMeta" class="helper"></p>
+        <p id="credit" class="credit"></p>
+        <div class="player-row">
+          <button id="playButton" class="primary-button">Play with the video</button>
+          <button id="anotherButton" class="secondary-button">Another song</button>
+          <a id="downloadSong" class="secondary-button" download>Download the song</a>
+          <button id="exportButton" class="secondary-button">Export video</button>
+        </div>
+        <label class="toggle credit-toggle"><input id="exportCredit" type="checkbox" checked> Show the song credit in the exported video <span class="helper">The licence (CC BY 4.0) requires it. Turn it off only if you credit the music another way.</span></label>
+        <div id="exportRow" class="export-row" hidden>
+          <div class="progress export-progress"><span id="exportBar"></span></div>
+          <span id="exportLabel" class="helper">Exporting…</span>
+          <button id="cancelExport" class="secondary-button">Cancel</button>
+        </div>
+        <div class="scrub-row"><input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Position in the video"><output id="clock">0:00 / 0:00</output></div>
+        <label class="volume-row">Volume <input id="volume" type="range" min="0" max="1" step="0.01" value="0.9" aria-label="Volume"></label>
+        <p class="helper" id="songNote"></p>
+      </section>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><span>EchoSphere · runs in your browser</span><span class="footer-links"><a href="../">Make music from a feeling instead</a><button id="creditsButton">Credits &amp; about</button></span></footer>
+</div>
+<dialog id="creditsDialog" aria-labelledby="creditsTitle">
+  <div class="dialog-head"><h2 id="creditsTitle">Made of light and sound.</h2><button id="closeCredits" class="icon-button" aria-label="Close credits">×</button></div>
+  <p>Your video is opened and read inside this page. It is never uploaded. The sphere is found from its rim, its lit and coloured interior and its movement, then its colours give the feeling: gold is Warm, violet is Calm, blue is Sad, red or orange is Dynamic. That is a colour rule, not a trained model, so it can be wrong, and you can always choose the feeling yourself.</p>
+  <h3>The songs</h3>
+  <p>Recorded music by Kevin MacLeod (<a href="https://incompetech.com">incompetech.com</a>), licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons: By Attribution 4.0</a>. The credit for the song that is playing is shown under it. Songs are shortened and faded to fit the video. <a id="creditsLink" href="https://github.com/Ehtiram-Shukurov/echosphere-music/blob/main/music-library/CREDITS.md">The full list of credits</a>.</p>
+  <p>The source, the guide and the tests are in the <a href="https://github.com/Ehtiram-Shukurov/echosphere-music">project on GitHub</a>.</p>
+</dialog>
+<audio id="song" crossorigin="anonymous" preload="auto"></audio>
+<script src="stage.js"></script><script src="../web/sphere.js"></script>
+<script src="mood.js"></script><script src="detect.js"></script><script src="library.js"></script><script src="app.js"></script>
+</body>
+</html>

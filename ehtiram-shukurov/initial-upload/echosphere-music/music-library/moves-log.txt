@@ -1,0 +1,7 @@
+Moves applied 2026-09-29 00:03. Nothing was deleted. 80 audio files before and after; every fingerprint verified.
+relabelled: calm/Blue Feather.mp3 -> sad/Blue Feather.mp3  sha256 b41b5bdd74d03e41
+relabelled: sad/Loss.mp3 -> calm/Loss.mp3  sha256 13fd91b1f63dd862
+relabelled: sad/Night on the Docks - Sax.mp3 -> calm/Night on the Docks - Sax.mp3  sha256 732871fa31755c4a
+relabelled: warm/Luminous Rain.mp3 -> calm/Luminous Rain.mp3  sha256 73825cc2c4aba34e
+removed: warm/Midsummer Sky.mp3 -> _removed/warm/Midsummer Sky.mp3  sha256 eae0a17f266f109a
+removed: warm/Sapphire Isle.mp3 -> _removed/warm/Sapphire Isle.mp3  sha256 bfd591ef7f89e010

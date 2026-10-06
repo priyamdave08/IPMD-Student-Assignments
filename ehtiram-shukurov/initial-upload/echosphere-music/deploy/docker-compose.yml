@@ -1,0 +1,39 @@
+# EchoSphere behind Caddy (automatic HTTPS). Run from this folder:  docker compose up -d --build
+# Needs a .env file next to this one (copy .env.example). Nothing secret is stored in this file.
+services:
+  echosphere:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      ECHOSPHERE_API_KEY: ${ECHOSPHERE_API_KEY:?set ECHOSPHERE_API_KEY in .env}
+      ECHOSPHERE_ALLOWED_HOSTS: ${ECHOSPHERE_HOSTNAME:?set ECHOSPHERE_HOSTNAME in .env}
+      ECHOSPHERE_RETENTION_HOURS: ${ECHOSPHERE_RETENTION_HOURS:-24}
+      ECHOSPHERE_MAX_STORAGE_GB: ${ECHOSPHERE_MAX_STORAGE_GB:-20}
+    volumes:
+      - echosphere-data:/data
+    expose:
+      - "8765"          # reachable only by Caddy, never published to the internet
+    shm_size: "1gb"     # Chromium needs shared memory
+    mem_limit: 9g       # leave headroom on a 12 GB machine
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - echosphere
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      ECHOSPHERE_HOSTNAME: ${ECHOSPHERE_HOSTNAME:?set ECHOSPHERE_HOSTNAME in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  echosphere-data:
+  caddy-data:
+  caddy-config:

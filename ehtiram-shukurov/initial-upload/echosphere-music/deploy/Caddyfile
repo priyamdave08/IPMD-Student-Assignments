@@ -1,0 +1,6 @@
+{$ECHOSPHERE_HOSTNAME} {
+	request_body {
+		max_size 110MB
+	}
+	reverse_proxy echosphere:8765
+}

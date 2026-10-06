@@ -1,0 +1,104 @@
+{
+  "tracks": [
+    {
+      "duration": 120,
+      "eligible": true,
+      "features": {
+        "lead_silence_s": 0,
+        "onset_rate": 2.8,
+        "rms_db": -12.0,
+        "centroid_hz": 3200.0,
+        "low_ratio": 0.25,
+        "flux_mean": 5.2,
+        "mode_margin": 0.6,
+        "dynamic_range_db": 14.0,
+        "tempo_bpm": 128.0,
+        "pulse_clarity": 0.8
+      },
+      "file": "warm/t1.mp3",
+      "id": "t1",
+      "mood": "warm",
+      "title": "T1"
+    },
+    {
+      "duration": 200,
+      "eligible": true,
+      "features": {
+        "lead_silence_s": 1.0,
+        "onset_rate": 1.2,
+        "rms_db": -18.0,
+        "centroid_hz": 1400.0,
+        "low_ratio": 0.35,
+        "flux_mean": 2.1,
+        "mode_margin": 0.4,
+        "dynamic_range_db": 10.0,
+        "tempo_bpm": 92.0,
+        "pulse_clarity": 0.6
+      },
+      "file": "warm/t2.mp3",
+      "id": "t2",
+      "mood": "warm",
+      "title": "T2"
+    },
+    {
+      "duration": 30,
+      "eligible": true,
+      "features": {
+        "lead_silence_s": 0,
+        "onset_rate": 3.8,
+        "rms_db": -9.0,
+        "centroid_hz": 4500.0,
+        "low_ratio": 0.2,
+        "flux_mean": 7.5,
+        "mode_margin": 0.2,
+        "dynamic_range_db": 18.0,
+        "tempo_bpm": 150.0,
+        "pulse_clarity": 0.9
+      },
+      "file": "warm/t3.mp3",
+      "id": "t3",
+      "mood": "warm",
+      "title": "T3"
+    },
+    {
+      "duration": 150,
+      "eligible": true,
+      "features": {
+        "lead_silence_s": 0,
+        "onset_rate": 0.7,
+        "rms_db": -22.0,
+        "centroid_hz": 700.0,
+        "low_ratio": 0.55,
+        "flux_mean": 1.2,
+        "mode_margin": -0.5,
+        "dynamic_range_db": 8.0,
+        "tempo_bpm": 70.0,
+        "pulse_clarity": 0.4
+      },
+      "file": "sad/t4.mp3",
+      "id": "t4",
+      "mood": "sad",
+      "title": "T4"
+    },
+    {
+      "duration": 180,
+      "eligible": false,
+      "features": {
+        "lead_silence_s": 0,
+        "onset_rate": 2.0,
+        "rms_db": -15.0,
+        "centroid_hz": 2000.0,
+        "low_ratio": 0.3,
+        "flux_mean": 3.5,
+        "mode_margin": 0.1,
+        "dynamic_range_db": 12.0,
+        "tempo_bpm": 110.0,
+        "pulse_clarity": 0.7
+      },
+      "file": "warm/t5.mp3",
+      "id": "t5",
+      "mood": "warm",
+      "title": "T5"
+    }
+  ]
+}

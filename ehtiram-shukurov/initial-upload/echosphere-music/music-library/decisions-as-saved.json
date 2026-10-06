@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "tracks": {
+    "anger/All This.mp3": {
+      "approve": true
+    },
+    "calm/Amazing Grace 2011.mp3": {
+      "approve": true
+    },
+    "calm/Blue Feather.mp3": {
+      "mood": "sad"
+    },
+    "calm/DD Groove.mp3": {
+      "approve": true
+    },
+    "calm/Impact Andante.mp3": {
+      "approve": true
+    },
+    "calm/Midsummer Sky.mp3": {
+      "approve": true
+    },
+    "warm/Midsummer Sky.mp3": {
+      "exclude": true,
+      "note": "duplicate of the copy you kept"
+    },
+    "calm/Sapphire Isle.mp3": {
+      "approve": true
+    },
+    "warm/Sapphire Isle.mp3": {
+      "exclude": true,
+      "note": "duplicate of the copy you kept"
+    },
+    "sad/Impromptu in Quarter Comma Meantone.mp3": {
+      "approve": true
+    },
+    "sad/Loss.mp3": {
+      "mood": "calm"
+    },
+    "sad/Night on the Docks - Sax.mp3": {
+      "mood": "calm"
+    },
+    "sad/Send for the Horses.mp3": {
+      "approve": true
+    },
+    "warm/Angel Share.mp3": {
+      "approve": true
+    },
+    "warm/Fretless.mp3": {
+      "approve": true
+    },
+    "warm/Inspired.mp3": {
+      "approve": true
+    },
+    "warm/Luminous Rain.mp3": {
+      "mood": "calm"
+    },
+    "warm/Neon Laser Horizon.mp3": {
+      "approve": true
+    },
+    "warm/Son Of A Rocket.mp3": {
+      "approve": true
+    },
+    "warm/Super Power Cool Dude.mp3": {
+      "approve": true
+    },
+    "warm/Pennsylvania Rose.mp3": {
+      "approve": true
+    },
+    "warm/Inner Light.mp3": {
+      "approve": true
+    },
+    "warm/Midday Dance.mp3": {
+      "approve": true
+    },
+    "calm/Thinking of You.mp3": {
+      "approve": true
+    },
+    "calm/Light Thought var 1.mp3": {
+      "approve": true
+    },
+    "calm/Swimmey Texture.mp3": {
+      "approve": true
+    },
+    "sad/The Ice Giants.mp3": {
+      "approve": true
+    },
+    "sad/Trio for Piano Violin and Viola.mp3": {
+      "approve": true
+    },
+    "sad/Ghost Processional.mp3": {
+      "approve": true
+    },
+    "anger/Corruption.mp3": {
+      "approve": true
+    },
+    "anger/The Cannery.mp3": {
+      "approve": true
+    },
+    "anger/Tenebrous Brothers Carnival - Intermission.mp3": {
+      "approve": true
+    }
+  }
+}

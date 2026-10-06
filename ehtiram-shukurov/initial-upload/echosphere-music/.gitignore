@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+.pytest_cache/
+data/
+.env
+test-results/
+*.pyc
+data-*/
+data-hosted*
+review-evidence/
+data-e2e*
+
+# New audio is ignored by default so nothing is published by accident. Tracks whose licence is confirmed are added on purpose with `git add -f`.
+# Files already tracked stay tracked. Duplicates moved out of the library (_removed/) are never committed.
+music-library/_removed/
+music-library/**/*.mp3
+music-library/**/*.wav
+music-library/**/*.m4a
+music-library/**/*.flac
+music-library/**/*.ogg
+music-library/incoming/
+music-library/.features-cache.json
+music-library/review.html

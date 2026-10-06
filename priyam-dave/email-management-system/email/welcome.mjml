@@ -1,0 +1,27 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="16px" line-height="1.6" color="#2A2F42" padding="8px 0" />
+    </mj-attributes>
+    <mj-preview>A new way to show how you feel — reserve your spot for $1.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#F4F6FB">
+    <mj-section padding="24px 0 8px 0">
+      <mj-column>
+        <mj-text align="center" font-size="20px" font-weight="bold" color="#7B4ED6">EchoSphere</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" border-radius="12px" padding="16px 24px">
+      <mj-column>
+        <mj-text>Hi {{first_name}},</mj-text>
+        <mj-text>Have you ever struggled answering that question? Sometimes, words don't feel enough or even impossible to describe how we feel.</mj-text>
+        <mj-text>Instead, why don't we use light that has no boundaries and limitless colors to show your feelings that cannot be described in words?</mj-text>
+        <mj-text>EchoSphere is a physical AI companion robot — a small glowing sphere that senses how you feel through a look, your voice, or a touch, and turns it into light and music: color, motion, glow, rhythm, and sound. So a feeling can be seen and heard, when words aren't enough. It's for people with deep emotions who find words insufficient, and the people who support them.</mj-text>
+        <mj-text>We launch on Kickstarter on March 2, 2027. Before then, you can reserve your spot for $1 (it's fully refundable). Reserving gets you a private link at 7:00 AM PT on launch day — two hours before the public — and puts you first in line.</mj-text>
+        <mj-text>— The EchoSphere Team</mj-text>
+        <mj-button href="{{RESERVE_LINK}}" background-color="#7B4ED6" color="#ffffff" font-size="16px" font-weight="bold" border-radius="8px" padding="24px 0 8px 0" inner-padding="14px 28px">Unlock colors for your emotions →</mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

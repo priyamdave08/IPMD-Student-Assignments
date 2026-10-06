@@ -1,0 +1,29 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="16px" line-height="1.6" color="#2A2F42" padding="8px 0" />
+    </mj-attributes>
+    <mj-preview>It's happening. EchoSphere is live right now.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#F4F6FB">
+    <mj-section padding="24px 0 8px 0">
+      <mj-column>
+        <mj-text align="center" font-size="20px" font-weight="bold" color="#7B4ED6">EchoSphere</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" border-radius="12px" padding="16px 24px">
+      <mj-column>
+        <mj-text>ECHOSPHERE IS LIVE ON KICKSTARTER  ·  March 2, 2027</mj-text>
+        <mj-text>Hi {{first_name}},</mj-text>
+        <mj-text>WE ARE LIVE! At this second, EchoSphere is glowing on Kickstarter — displaying the first light for feelings we can't put into words.</mj-text>
+        <mj-text>→ Back EchoSphere on Kickstarter: <a href="{{KICKSTARTER_LINK}}" style="color:#7B4ED6;text-decoration:underline;">back EchoSphere on Kickstarter</a></mj-text>
+        <mj-text>Reward tiers:<br/>  • $5 — Spark: digital access to the EchoSphere web experience + your Emotion Code + founding supporter recognition<br/>  • $99 — Early Light (Early Bird, limited): full app access (iOS &amp; Android) + Emotion Code + exclusive color palette + name in the founding backer registry<br/>  • $179 — Connected Light: two app licenses + shared Connection Mode + both names in the registry<br/>  • $299 — Founding Circle: full access + Founding Circle status for life + priority features + a direct line to the team<br/>  • $399 — Community Builder: five app licenses for a community/classroom + a personal onboarding session + partner recognition</mj-text>
+        <mj-text>This first 48 hours is our Golden Hour. Every backer today pushes us higher in Kickstarter's discovery, helping us reach a bigger audience, therefore a bigger impact. Support in our passion to create a change. Help those who struggle with emotions. You can be the changemaker.</mj-text>
+        <mj-text>If you reserved: thank you. If you haven't backed yet, now's the moment for you to ✨SHINE✨. We hope that you support us in our bigger cause.</mj-text>
+        <mj-text>— The EchoSphere Team</mj-text>
+        <mj-button href="{{KICKSTARTER_LINK}}" background-color="#7B4ED6" color="#ffffff" font-size="16px" font-weight="bold" border-radius="8px" padding="24px 0 8px 0" inner-padding="14px 28px">Back EchoSphere on Kickstarter →</mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

@@ -1,0 +1,27 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="16px" line-height="1.6" color="#2A2F42" padding="8px 0" />
+    </mj-attributes>
+    <mj-preview>Last call to reserve for $1.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#F4F6FB">
+    <mj-section padding="24px 0 8px 0">
+      <mj-column>
+        <mj-text align="center" font-size="20px" font-weight="bold" color="#7B4ED6">EchoSphere</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" border-radius="12px" padding="16px 24px">
+      <mj-column>
+        <mj-text>Hi {{first_name}},</mj-text>
+        <mj-text>I hope you are doing well. We just wanted to check in on you to see if you were okay.</mj-text>
+        <mj-text>If you ever feel like your feelings aren't being noticed, don't hesitate to use our EchoSphere. It will always be there for you.</mj-text>
+        <mj-text>If you'd like to be among the first, you can lock in early access at 7:00 AM PT on March 2, 2027 for $1 (fully refundable).<br/>If it's not for you, no worries — you'll still hear from us when we go live.</mj-text>
+        <mj-text>If it's not for you, no worries — you don't need to do anything. But if it does speak to you, here's your spot.</mj-text>
+        <mj-text>— The EchoSphere Team</mj-text>
+        <mj-button href="{{RESERVE_LINK}}" background-color="#7B4ED6" color="#ffffff" font-size="16px" font-weight="bold" border-radius="8px" padding="24px 0 8px 0" inner-padding="14px 28px">Reserve your EchoSphere for $1 →</mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

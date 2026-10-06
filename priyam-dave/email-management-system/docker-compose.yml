@@ -1,0 +1,33 @@
+# Throwaway Postgres for demoing EMS + the admin dashboard.
+#
+#   docker compose up -d          # start the DB (schema auto-loads on first boot)
+#   npm run seed                  # populate demo contacts (uses .env)
+#   npm start                     # open http://localhost:4000/admin
+#   docker compose down -v        # stop + wipe the DB when you're done
+#
+# Isolated from any local Postgres: it listens on host port 5433, not 5432.
+# The matching connection string is in .env.example:
+#   PG_CONNECTION_STRING=postgres://ems:ems@localhost:5433/ems
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ems-demo-db
+    environment:
+      POSTGRES_USER: ems
+      POSTGRES_PASSWORD: ems
+      POSTGRES_DB: ems
+    ports:
+      - "5433:5432"
+    volumes:
+      # Auto-run on first boot, in filename order: schema, then the additive migration.
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./sql/migration_v2.sql:/docker-entrypoint-initdb.d/02_migration.sql:ro
+      - ems_demo_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ems -d ems"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  ems_demo_pgdata:

@@ -1,0 +1,156 @@
+openapi: 3.0.3
+info:
+  title: IPMD Mail Management — Internal Cross-Service API
+  version: "1.0.0"
+  description: >
+    Server-to-server surface of the standalone Email Management System (EMS).
+    These endpoints are called **only** by the EchoAi Flask backend, which owns
+    the single Stripe webhook. EchoAi confirms a $1 reservation (real Stripe
+    `checkout.session.completed` or the local mock-payment path) and then
+    mirrors that conversion into the EMS lifecycle database via `/internal/reserved`.
+
+    This document covers the internal cross-service contract only. Public/browser
+    routes (`/track/*`, `/unsubscribe`, `/gdpr`, `/admin`, `/signup`,
+    `/upload-csv`, `/health`) are intentionally out of scope.
+
+    Delivery provider: Gmail over SMTP (nodemailer). There is no third-party
+    provider webhook (no SendGrid/Mailgun-style delivery/bounce callbacks).
+
+servers:
+  - url: "{EMS_BASE_URL}"
+    description: >
+      Base URL of the EMS service. On the EchoAi side this is the `EMS_BASE_URL`
+      environment variable read in backend/src/config.py; the caller is
+      reservation.py:notify_ems_reserved().
+    variables:
+      EMS_BASE_URL:
+        default: http://localhost:4000
+
+tags:
+  - name: internal
+    description: Server-to-server endpoints, token-authenticated.
+
+paths:
+  /internal/reserved:
+    post:
+      tags: [internal]
+      operationId: notifyReserved
+      summary: Mirror a confirmed $1 reservation into the EMS lifecycle
+      description: >
+        Called by EchoAi **after** a reservation is committed. Upserts the donor
+        into the EMS `users` table (creating a cold reserver as a `vip`, or
+        promoting an existing contact), records a `reserved` analytics event, and
+        sends the `reserved_thankyou` email **synchronously** over Gmail SMTP
+        (this send bypasses the cron/queue lifecycle path).
+
+        **Idempotent:** an already-reserved user is acknowledged with
+        `already_reserved` and no second email is sent, so Stripe retries and
+        replays are safe. The EchoAi caller treats this endpoint as best-effort
+        (5s timeout, failures swallowed) — a slow or down EMS never fails a
+        reservation.
+      security:
+        - InternalServiceToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReservedRequest"
+            examples:
+              coldReserver:
+                summary: New reserver not previously on the EMS list
+                value:
+                  email: donor@example.com
+                  first_name: Alex
+                  amount_cents: 100
+              minimal:
+                summary: Only the required field
+                value:
+                  email: donor@example.com
+      responses:
+        "200":
+          description: >
+            Reservation processed. `ok` = created/updated and `reserved_thankyou`
+            sent; `already_reserved` = idempotent replay, no email sent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReservedResponse"
+              examples:
+                ok:
+                  value: { status: ok }
+                alreadyReserved:
+                  value: { status: already_reserved }
+        "400":
+          description: Missing required `email`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example: { error: email required }
+        "401":
+          description: Missing or invalid `X-Internal-Service-Token`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example: { error: unauthorized }
+        "500":
+          description: Unhandled server error (DB or send failure).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example: { error: internal_error }
+
+components:
+  securitySchemes:
+    InternalServiceToken:
+      type: apiKey
+      in: header
+      name: X-Internal-Service-Token
+      description: >
+        Shared secret held by both services (`INTERNAL_SERVICE_TOKEN` env var on
+        each side). Same header/token convention EchoAi's Flask uses for its own
+        internal endpoints. If the server's token is unset, all calls are rejected.
+
+  schemas:
+    ReservedRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+          description: Donor email. The only required field; used as the upsert key.
+          example: donor@example.com
+        first_name:
+          type: string
+          nullable: true
+          description: Optional; stored as NULL when absent.
+          example: Alex
+        amount_cents:
+          type: integer
+          nullable: true
+          description: >
+            Reservation amount in cents. Coerced to null if not a finite number.
+          example: 100
+      additionalProperties: false
+
+    ReservedResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ok, already_reserved]
+      additionalProperties: false
+
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          enum: [email required, unauthorized, internal_error]
+      additionalProperties: false

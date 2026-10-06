@@ -1,0 +1,26 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="16px" line-height="1.6" color="#2A2F42" padding="8px 0" />
+    </mj-attributes>
+    <mj-preview>A new way to show how you feel.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#F4F6FB">
+    <mj-section padding="24px 0 8px 0">
+      <mj-column>
+        <mj-text align="center" font-size="20px" font-weight="bold" color="#7B4ED6">EchoSphere</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" border-radius="12px" padding="16px 24px">
+      <mj-column>
+        <mj-text>Hi {{first_name}},</mj-text>
+        <mj-text>We warmly invite you again to be the special "firsts" to experience our EchoSphere.</mj-text>
+        <mj-text>EchoSphere turns a feeling into light: a slow blue breath for sadness, a warm gold pulse, a sharp red heartbeat, a calming purple wave. Instead of explaining how you feel, you show it. It's made for people who find words hard, and those who support them.</mj-text>
+        <mj-text>You can reserve your spot for $1 (refundable) before our March 2, 2027 launch — and get early access on launch morning.</mj-text>
+        <mj-text>— The EchoSphere Team</mj-text>
+        <mj-button href="{{RESERVE_LINK}}" background-color="#7B4ED6" color="#ffffff" font-size="16px" font-weight="bold" border-radius="8px" padding="24px 0 8px 0" inner-padding="14px 28px">Reserve your EchoSphere for $1 →</mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

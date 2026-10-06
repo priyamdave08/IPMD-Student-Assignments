@@ -1,0 +1,23 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="16px" line-height="1.6" color="#2A2F42" padding="8px 0" />
+    </mj-attributes>
+    <mj-preview>Thank you, and we hope to see you again soon.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#F4F6FB">
+    <mj-section padding="24px 0 8px 0">
+      <mj-column>
+        <mj-text align="center" font-size="20px" font-weight="bold" color="#7B4ED6">EchoSphere</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" border-radius="12px" padding="16px 24px">
+      <mj-column>
+        <mj-text>Hi {{first_name}},</mj-text>
+        <mj-text>We're sorry to see you go. You won't receive any more emails from us. No hard feelings, and the door's always open if you change your mind.</mj-text>
+        <mj-text>— The EchoSphere Team</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

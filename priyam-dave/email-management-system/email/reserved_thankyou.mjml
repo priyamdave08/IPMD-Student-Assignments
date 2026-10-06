@@ -1,0 +1,27 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="16px" line-height="1.6" color="#2A2F42" padding="8px 0" />
+    </mj-attributes>
+    <mj-preview>You're in — your EchoSphere spot is reserved.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#F4F6FB">
+    <mj-section padding="24px 0 8px 0">
+      <mj-column>
+        <mj-text align="center" font-size="20px" font-weight="bold" color="#7B4ED6">EchoSphere</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" border-radius="12px" padding="16px 24px">
+      <mj-column>
+        <mj-text>Hi {{first_name}},</mj-text>
+        <mj-text>It's done — your spot is reserved. Thank you for being one of the first.</mj-text>
+        <mj-text>Your $1 is fully refundable; what it really gets you is being first:<br/>  • A private link at 7:00 AM PT on launch day, March 2, 2027 — two hours before the public<br/>  • Your place at the front of the line, in the window that matters most<br/>  • First access to the EchoSphere experience as we build</mj-text>
+        <mj-text>Your next step: join fellow early believers in our community, where we share progress and early demos first.</mj-text>
+        <mj-text>We'll see you on March 2, 2027.</mj-text>
+        <mj-text>— The EchoSphere Team</mj-text>
+        <mj-button href="{{COMMUNITY_LINK}}" background-color="#7B4ED6" color="#ffffff" font-size="16px" font-weight="bold" border-radius="8px" padding="24px 0 8px 0" inner-padding="14px 28px">Join the community →</mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

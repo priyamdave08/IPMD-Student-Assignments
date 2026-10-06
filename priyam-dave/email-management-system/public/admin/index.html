@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en" class="min-h-screen">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EMS · Email Lifecycle Console</title>
+    
+    <!-- Tailwind Play CDN configured safely -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      try {
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                ink: "#090A0F",
+                panel: "#11131C",
+                line: "#2A2F42",
+                mist: "#E8ECF8",
+                muted: "#9AA3B8",
+                happy: "#FFD166",
+                anger: "#C1121F",
+                surprisePos: "#80ED99",
+                sadPos: "#CEE7FF",
+                contemptPos: "#7B4ED6"
+              },
+              fontFamily: {
+                sans: ["ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"]
+              }
+            }
+          }
+        };
+      } catch (e) {
+        console.warn("Tailwind config init warning:", e);
+      }
+    </script>
+    
+    <style>
+      html, body {
+        background-color: #090A0F;
+        min-height: 100vh;
+        margin: 0;
+      }
+      body {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+      button, input, select, textarea { font: inherit; }
+      
+      [data-panel].hidden { display: none !important; }
+      
+      ::-webkit-scrollbar { width: 10px; height: 10px; }
+      ::-webkit-scrollbar-thumb { background: #2A2F42; border-radius: 999px; }
+      
+      .tab-active { color: #E8ECF8; }
+      .tab-active::after {
+        content: ""; position: absolute; left: 0; right: 0; bottom: -1px;
+        height: 2px; background: linear-gradient(90deg, #7B4ED6, #80ED99);
+      }
+      [x-cloak] { display: none !important; }
+
+      /* Explicit WebKit & Safari Fallbacks */
+      .bg-ink\/85 { background-color: rgba(9, 10, 15, 0.85) !important; }
+      .bg-ink\/60 { background-color: rgba(9, 10, 15, 0.6) !important; }
+      .bg-surprisePos\/90 { background-color: rgba(128, 237, 153, 0.9) !important; }
+      .bg-happy\/90 { background-color: rgba(255, 209, 102, 0.9) !important; }
+      .bg-contemptPos\/90 { background-color: rgba(123, 78, 214, 0.9) !important; }
+      .border-line\/70 { border-color: rgba(42, 47, 66, 0.7) !important; }
+      .border-line\/60 { border-color: rgba(42, 47, 66, 0.6) !important; }
+      .text-muted\/60 { color: rgba(154, 163, 184, 0.6) !important; }
+      
+      .backdrop-blur {
+        -webkit-backdrop-filter: blur(12px) !important;
+        backdrop-filter: blur(12px) !important;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-mist font-sans antialiased">
+    <div class="min-h-screen">
+      <!-- Header -->
+      <header class="sticky top-0 z-20 border-b border-line/70 bg-ink/85 backdrop-blur">
+        <div class="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="h-9 w-9 rounded-lg bg-gradient-to-br from-contemptPos to-surprisePos flex items-center justify-center text-ink font-bold">◈</div>
+            <div>
+              <h1 class="text-sm font-semibold tracking-wide">Email Lifecycle Console</h1>
+              <p class="text-xs text-muted">IPMD · EchoSphere donor program</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="conn-status" class="text-xs px-2.5 py-1 rounded-full border border-line text-muted">checking…</span>
+            <button id="refresh-btn" type="button" class="text-xs px-3 py-1.5 rounded-lg border border-line hover:border-muted hover:text-mist text-muted transition">↻ Refresh</button>
+          </div>
+        </div>
+        <!-- Tabs -->
+        <nav class="mx-auto max-w-7xl px-6 flex gap-6 text-sm text-muted">
+          <button type="button" data-tab="overview" class="tab relative py-3 tab-active">Overview</button>
+          <button type="button" data-tab="contacts" class="tab relative py-3">Contacts</button>
+          <button type="button" data-tab="actions" class="tab relative py-3">Actions</button>
+          <button type="button" data-tab="emails" class="tab relative py-3">Emails</button>
+        </nav>
+      </header>
+
+      <main class="mx-auto max-w-7xl px-6 py-8">
+        <!-- OVERVIEW -->
+        <section data-panel="overview">
+          <div id="metric-cards" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"></div>
+          <div class="mt-8 rounded-xl border border-line bg-panel p-6">
+            <h2 class="text-sm font-semibold mb-1">Phase A reserve-ask funnel</h2>
+            <p class="text-xs text-muted mb-5">Where every contact sits in the $1 reservation sequence.</p>
+            <div id="funnel"></div>
+          </div>
+        </section>
+
+        <!-- CONTACTS -->
+        <section data-panel="contacts" class="hidden">
+          <div class="flex flex-wrap items-center gap-3 mb-4">
+            <input id="contact-search" type="text" placeholder="Search email or name…"
+              class="flex-1 min-w-[200px] rounded-lg bg-panel border border-line px-3 py-2 text-sm placeholder:text-muted focus:outline-none focus:border-contemptPos" />
+            <select id="contact-stage" class="rounded-lg bg-panel border border-line px-3 py-2 text-sm text-mist focus:outline-none focus:border-contemptPos">
+              <option value="">All stages</option>
+              <option value="not_started">Not started</option>
+              <option value="welcomed">Welcomed</option>
+              <option value="nudged">Nudged</option>
+              <option value="final_ask">Final ask</option>
+              <option value="reserved">Reserved</option>
+              <option value="unsubscribed">Unsubscribed</option>
+            </select>
+          </div>
+          <div class="rounded-xl border border-line bg-panel overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead class="text-xs text-muted uppercase tracking-wider bg-ink/40">
+                  <tr>
+                    <th class="text-left font-medium px-4 py-3">Contact</th>
+                    <th class="text-left font-medium px-4 py-3">Stage</th>
+                    <th class="text-left font-medium px-4 py-3">Sent</th>
+                    <th class="text-left font-medium px-4 py-3">Opens</th>
+                    <th class="text-left font-medium px-4 py-3">Clicks</th>
+                    <th class="text-left font-medium px-4 py-3">Score</th>
+                    <th class="text-left font-medium px-4 py-3">Reserved</th>
+                  </tr>
+                </thead>
+                <tbody id="contacts-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <p id="contacts-count" class="text-xs text-muted mt-3"></p>
+        </section>
+
+        <!-- ACTIONS -->
+        <section data-panel="actions" class="hidden grid md:grid-cols-3 gap-6">
+          <div class="rounded-xl border border-line bg-panel p-6">
+            <h2 class="text-sm font-semibold mb-1">Add a contact</h2>
+            <p class="text-xs text-muted mb-4">Drops a single contact into the Phase A funnel.</p>
+            <form id="signup-form" class="space-y-3">
+              <input name="email" type="email" required placeholder="email@example.com" class="w-full rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" />
+              <input name="first_name" type="text" placeholder="First name (optional)" class="w-full rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" />
+              <button type="submit" class="w-full rounded-lg bg-contemptPos/90 hover:bg-contemptPos text-white text-sm font-medium py-2 transition">Add to funnel</button>
+            </form>
+            <p data-result="signup" class="text-xs mt-3"></p>
+          </div>
+
+          <div class="rounded-xl border border-line bg-panel p-6">
+            <h2 class="text-sm font-semibold mb-1">Import CSV</h2>
+            <p class="text-xs text-muted mb-4">Bulk-import contacts. Requires an <code class="text-happy">email</code> column; an optional <code class="text-happy">first_name</code> column is used to personalize emails.</p>
+            <form id="csv-form" class="space-y-3">
+              <input name="file" type="file" accept=".csv" required class="w-full text-xs text-muted file:mr-3 file:rounded-lg file:border-0 file:bg-line file:text-mist file:px-3 file:py-2 file:text-xs" />
+              <button type="submit" class="w-full rounded-lg border border-line hover:border-muted text-sm font-medium py-2 transition">Upload</button>
+            </form>
+            <p data-result="csv" class="text-xs mt-3"></p>
+          </div>
+
+          <div class="rounded-xl border border-line bg-panel p-6">
+            <h2 class="text-sm font-semibold mb-1">Trigger selected email</h2>
+            <p class="text-xs text-muted mb-4">Queue any test, campaign, or custom template for its audience.</p>
+            <form id="campaign-form" class="space-y-3">
+              <select name="email_type" required class="w-full rounded-lg bg-ink border border-line px-3 py-2 text-sm text-mist focus:outline-none focus:border-contemptPos">
+                <option value="">Choose email…</option>
+              </select>
+              <button type="submit" class="w-full rounded-lg bg-happy/90 hover:bg-happy text-ink text-sm font-medium py-2 transition">Queue send</button>
+            </form>
+            <p data-result="campaign" class="text-xs mt-3"></p>
+          </div>
+
+          <div class="rounded-xl border border-line bg-panel p-6">
+            <h2 class="text-sm font-semibold mb-1">Send test email</h2>
+            <p class="text-xs text-muted mb-4">Queues the <code class="text-happy">test</code> template to every current contact. Safe to run repeatedly.</p>
+            <button id="send-test-btn" type="button" class="w-full rounded-lg bg-surprisePos/90 hover:bg-surprisePos text-ink text-sm font-medium py-2 transition">Send test to all contacts</button>
+            <p data-result="send-test" class="text-xs mt-3"></p>
+          </div>
+
+          <div class="rounded-xl border border-line bg-panel p-6">
+            <h2 class="text-sm font-semibold mb-1">Custom email</h2>
+            <p class="text-xs text-muted mb-4">Send a one-off message to an existing contact.</p>
+            <form id="custom-email-form" class="space-y-3">
+              <input name="email" type="email" required placeholder="recipient@example.com" class="w-full rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" />
+              <input name="subject" type="text" required maxlength="200" placeholder="Subject" class="w-full rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" />
+              <textarea name="body" required maxlength="20000" rows="6" placeholder="Write your message…" class="w-full rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos"></textarea>
+              <button type="submit" class="w-full rounded-lg bg-contemptPos/90 hover:bg-contemptPos text-white text-sm font-medium py-2 transition">Send custom email</button>
+            </form>
+            <p data-result="custom-email" class="text-xs mt-3"></p>
+          </div>
+
+          <div class="rounded-xl border border-line bg-panel p-6">
+            <h2 class="text-sm font-semibold mb-1">Email queue</h2>
+            <p class="text-xs text-muted mb-4">Pause sending without deleting queued jobs. Resume when delivery should continue.</p>
+            <button id="queue-toggle-btn" type="button" class="w-full rounded-lg border border-anger/50 text-anger hover:bg-anger/10 text-sm font-medium py-2 transition">Pause queue</button>
+            <p data-result="queue" class="text-xs mt-3"></p>
+          </div>
+        </section>
+
+        <!-- EMAILS -->
+        <section data-panel="emails" class="hidden">
+          <div class="mb-6 rounded-xl border border-line bg-panel p-6">
+            <h2 class="text-sm font-semibold mb-1">Create a custom email template</h2>
+            <p class="text-xs text-muted mb-4">Use the guided builder or switch to Raw MJML to paste and edit a complete template source.</p>
+            <form id="template-form" class="grid gap-3 md:grid-cols-2">
+              <input name="name" required pattern="[a-z][a-z0-9_\-]{1,63}" placeholder="Template name, e.g. donor_update" class="rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" />
+              <select name="editor_mode" class="rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" aria-label="Template editor mode">
+                <option value="builder">Guided builder</option>
+                <option value="mjml">Raw MJML</option>
+              </select>
+              <fieldset id="template-builder-fields" class="md:col-span-2 grid gap-3 md:grid-cols-2">
+              <input name="preheader" placeholder="Inbox preview text (optional)" value="Internal test — confirming the EchoSphere email system delivers." class="rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" />
+              <input name="title" required placeholder="Email title" value="EchoSphere" class="rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" />
+              <input name="eyebrow" placeholder="Small label, e.g. INTERNAL TEST EMAIL" value="INTERNAL TEST EMAIL" class="rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" />
+              <textarea name="body" required rows="5" placeholder="Write the email body here..." class="md:col-span-2 rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos">This is a test email from the IPMD Email Management System. If you're reading this, delivery, rendering, and tracking are all working end-to-end.
+
+Nothing to action here — you're on the internal test list.</textarea>
+              <input name="button_text" placeholder="Button text (optional)" value="Sample button (test link) →" class="rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" />
+              <input name="button_link" type="url" placeholder="Button link (optional)" value="https://example.com" class="rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos" />
+              <textarea name="signoff" rows="2" placeholder="Sign-off" class="md:col-span-2 rounded-lg bg-ink border border-line px-3 py-2 text-sm focus:outline-none focus:border-contemptPos">Thanks for helping us test 💜
+— The EchoSphere Team</textarea>
+              </fieldset>
+              <fieldset id="template-mjml-fields" class="md:col-span-2 hidden" disabled>
+                <label for="template-mjml-source" class="block text-xs text-muted mb-2">MJML source</label>
+                <textarea id="template-mjml-source" name="mjml_source" rows="16" required spellcheck="false" placeholder="Paste your complete MJML document, starting with &lt;mjml&gt;" class="w-full rounded-lg bg-ink border border-line px-3 py-2 text-sm font-mono focus:outline-none focus:border-contemptPos"></textarea>
+              </fieldset>
+              <div class="flex flex-col gap-2">
+                <button type="button" id="template-draft-btn" class="rounded-lg border border-happy/60 text-happy hover:bg-happy/10 text-sm font-medium px-4 py-2 transition">Draft &amp; preview</button>
+                <button type="submit" class="rounded-lg bg-contemptPos/90 hover:bg-contemptPos text-white text-sm font-medium px-4 py-2 transition">Add template</button>
+              </div>
+            </form>
+            <p data-result="template" class="text-xs mt-3"></p>
+          </div>
+          <div class="grid lg:grid-cols-[280px_1fr] gap-6">
+            <div id="template-list" class="space-y-2"></div>
+            <div class="rounded-xl border border-line bg-panel overflow-hidden min-h-[70vh]">
+              <div class="px-4 py-3 border-b border-line text-xs text-muted flex items-center justify-between">
+                <span id="preview-title">Select a template to preview</span>
+                <span class="text-muted/60">rendered MJML</span>
+              </div>
+              <iframe id="template-frame" class="w-full bg-white min-h-[500px]" style="height: 70vh;" title="Email preview"></iframe>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Contact drawer -->
+    <div id="drawer-backdrop" class="fixed inset-0 z-40 bg-black/60 hidden"></div>
+    <aside id="drawer" class="fixed top-0 right-0 z-50 h-full w-full max-w-md bg-panel border-l border-line translate-x-full transition-transform duration-300 overflow-y-auto">
+      <div id="drawer-content" class="p-6"></div>
+    </aside>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

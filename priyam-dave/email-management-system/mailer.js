@@ -118,6 +118,15 @@ function greetingName(user) {
   return token.charAt(0).toUpperCase() + token.slice(1).toLowerCase();
 }
 
+// Signed unsubscribe URL for a contact. Used for the footer link AND the
+// List-Unsubscribe header, so Gmail's own Unsubscribe button (GET) and RFC 8058
+// one-click (POST) both hit /unsubscribe with a token it will accept.
+function unsubscribeUrl(user) {
+  const baseUrl = process.env.PUBLIC_BASE_URL || "https://your-domain.com";
+  const token = jwt.sign({ email: user.email, userId: user.id }, jwtSecret);
+  return `${baseUrl}/unsubscribe?token=${token}`;
+}
+
 function injectTracking(html, user, emailType) {
   const tokenPayload = { email: user.email, userId: user.id, emailType };
   const token = jwt.sign(tokenPayload, jwtSecret);
@@ -160,8 +169,7 @@ function injectTracking(html, user, emailType) {
   const firstName = greetingName(user);
   trackedHtml = trackedHtml.replace(/\{\{first_name\}\}/g, firstName);
 
-  const unsubscribeToken = jwt.sign({ email: user.email, userId: user.id }, jwtSecret);
-  const unsubscribeLink = `${baseUrl}/unsubscribe?token=${unsubscribeToken}`;
+  const unsubscribeLink = unsubscribeUrl(user);
 
   // Physical postal address is required for CAN-SPAM compliance. Set
   // SENDER_POSTAL_ADDRESS in the environment; falls back to a clearly-marked
@@ -179,9 +187,7 @@ function injectTracking(html, user, emailType) {
 }
 
 async function sendCustomEmail(user, subject, body) {
-  const baseUrl = process.env.PUBLIC_BASE_URL || "https://your-domain.com";
-  const unsubscribeToken = jwt.sign({ email: user.email, userId: user.id }, jwtSecret);
-  const unsubscribeLink = `${baseUrl}/unsubscribe?token=${unsubscribeToken}`;
+  const unsubscribeLink = unsubscribeUrl(user);
   const escapedBody = String(body)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -254,9 +260,7 @@ async function sendEmailWithTracking(user, emailType, channelPreferred = "gmail"
     html,
     headers: {
       "Return-Path": "bounce@ipmdinc.com",
-      "List-Unsubscribe": `<mailto:bounce@ipmdinc.com>, <${process.env.PUBLIC_BASE_URL || "https://your-domain.com"}/unsubscribe?email=${encodeURIComponent(
-        user.email
-      )}>`,
+      "List-Unsubscribe": `<mailto:bounce@ipmdinc.com>, <${unsubscribeUrl(user)}>`,
       "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"
     }
   };

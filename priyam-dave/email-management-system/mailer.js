@@ -127,6 +127,33 @@ function unsubscribeUrl(user) {
   return `${baseUrl}/unsubscribe?token=${token}`;
 }
 
+// Plain-text alternative for the multipart/alternative body. HTML-only mail is
+// a spam signal, and text-only clients otherwise show nothing. Derived from the
+// final HTML (after tracking injection) so links in both parts match: each link
+// becomes "label (url)", block elements become line breaks, and the hidden
+// preheader, MSO conditionals, styles and the tracking pixel are dropped.
+function htmlToText(html) {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<(head|style|script)[\s\S]*?<\/\1>/gi, "")
+    .replace(/<div[^>]*display:\s*none[^>]*>[\s\S]*?<\/div>/gi, "")
+    .replace(/<img[^>]*>/gi, "")
+    .replace(/<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, (m, href, label) => {
+      const text = label.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+      return text ? `${text} (${href})` : href;
+    })
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|tr|h[1-6]|li)>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .replace(/[ \t]+/g, " ")
+    .replace(/ *\n */g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 function injectTracking(html, user, emailType) {
   const tokenPayload = { email: user.email, userId: user.id, emailType };
   const token = jwt.sign(tokenPayload, jwtSecret);
@@ -200,6 +227,7 @@ async function sendCustomEmail(user, subject, body) {
     to: user.email,
     subject,
     html,
+    text: htmlToText(html),
     headers: {
       "Return-Path": "bounce@ipmdinc.com",
       "List-Unsubscribe": `<mailto:bounce@ipmdinc.com>, <${unsubscribeLink}>`,
@@ -258,6 +286,7 @@ async function sendEmailWithTracking(user, emailType, channelPreferred = "gmail"
     to: user.email,
     subject,
     html,
+    text: htmlToText(html),
     headers: {
       "Return-Path": "bounce@ipmdinc.com",
       "List-Unsubscribe": `<mailto:bounce@ipmdinc.com>, <${unsubscribeUrl(user)}>`,

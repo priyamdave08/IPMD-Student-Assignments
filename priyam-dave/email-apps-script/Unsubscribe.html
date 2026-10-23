@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body { font-family: Arial, sans-serif; background: #f4f6fb; color: #2a2f42; margin: 0; }
+      .card { max-width: 440px; margin: 64px auto; background: #fff; border-radius: 12px; padding: 32px 24px; text-align: center; }
+      h1 { font-size: 20px; color: #7b4ed6; margin: 0 0 12px; }
+      p { line-height: 1.6; }
+      button { background: #7b4ed6; color: #fff; border: 0; border-radius: 8px; padding: 12px 28px; font-size: 16px; cursor: pointer; }
+      button:disabled { opacity: .6; cursor: default; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>EchoSphere</h1>
+      <div id="ask">
+        <p>Unsubscribe from EchoSphere emails?</p>
+        <button id="btn" onclick="go()">Unsubscribe</button>
+      </div>
+      <p id="done" hidden>You're unsubscribed. You won't receive any more emails from us.</p>
+      <p id="fail" hidden>This unsubscribe link isn't valid. Please reply to any of our emails and we'll remove you by hand.</p>
+    </div>
+    <script>
+      // A button rather than unsubscribing on page load: corporate link
+      // scanners open every URL in an email, and would otherwise unsubscribe
+      // people who never clicked. Gmail/Yahoo one-click uses POST and skips this.
+      var token = <?= token ?>;
+      function go() {
+        document.getElementById('btn').disabled = true;
+        google.script.run
+          .withSuccessHandler(function (ok) { show(ok ? 'done' : 'fail'); })
+          .withFailureHandler(function () { show('fail'); })
+          .confirmUnsubscribe(token);
+      }
+      function show(id) {
+        document.getElementById('ask').hidden = true;
+        document.getElementById(id).hidden = false;
+      }
+    </script>
+  </body>
+</html>
